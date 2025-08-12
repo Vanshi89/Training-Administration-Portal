@@ -1,4 +1,4 @@
-package com.tap.Training.Adminstrator.Portal;
+package com.tap;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
