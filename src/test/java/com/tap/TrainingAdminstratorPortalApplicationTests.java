@@ -1,4 +1,4 @@
-package com.tap.Training.Adminstrator.Portal;
+package com.tap;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
