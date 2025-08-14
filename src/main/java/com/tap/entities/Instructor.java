@@ -34,6 +34,7 @@ public class Instructor {
     private String lastName;
 
     @Column(name = "full_name", insertable = false)
+    @Formula("first_name || ' ' || last_name")
     private String fullName;
 
     @Column(name = "is_verified")
