@@ -5,12 +5,18 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "instructorEarnings", schema = "tap_project")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class InstructorEarning {
 
     @Id
@@ -45,4 +51,5 @@ public class InstructorEarning {
     @Column(name = "received_at", nullable = false)
     @NotNull(message = "Received timestamp is required")
     private LocalDateTime receivedAt;
+
 }

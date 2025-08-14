@@ -2,9 +2,8 @@ package com.tap.entities;
 
 import com.tap.entities.Student;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.data.annotation.Id;
+import lombok.*;
+
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,6 +13,9 @@ import java.util.List;
 @Table(name = "studentPreferences", schema = "tap_project")
 @Getter
 @Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class StudentPreference {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

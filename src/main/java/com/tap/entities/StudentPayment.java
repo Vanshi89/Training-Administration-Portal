@@ -2,9 +2,8 @@ package com.tap.entities;
 
 import com.tap.entities.Student;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.data.annotation.Id;
+import lombok.*;
+
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -13,6 +12,9 @@ import java.time.LocalDateTime;
 @Table(name = "studentPayments", schema = "tap_project")
 @Getter
 @Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class StudentPayment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
