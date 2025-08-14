@@ -2,12 +2,18 @@ package com.tap.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Formula;
 
 import java.util.UUID;
 
 @Entity
 @Table(name="students",schema="tap_project")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Student {
 
     @Id

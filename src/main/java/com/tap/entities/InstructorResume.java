@@ -1,10 +1,16 @@
 package com.tap.entities;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name="instructorResumes",schema="tap_project")
 public class InstructorResume {
 
@@ -12,7 +18,7 @@ public class InstructorResume {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer resumeId;
 
-    @ManyToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="instructor_id")
     private Instructor instructor;
 

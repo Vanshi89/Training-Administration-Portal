@@ -2,12 +2,18 @@ package com.tap.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name="instructorBankDetails",schema="tap_project")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class InstructorBankDetail {
 
     @Id
@@ -41,5 +47,9 @@ public class InstructorBankDetail {
     @Column(name="created_At",nullable = false,updatable = false)
     @CreationTimestamp
     private LocalDateTime createdAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "instructor_id", nullable = false)
+    private Instructor instructor;
 
 }
