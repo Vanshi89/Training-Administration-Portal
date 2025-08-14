@@ -2,17 +2,25 @@ package com.tap.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
 @Table(name="courses",schema="tap_project")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Course {
 
     @Id
@@ -23,7 +31,7 @@ public class Course {
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="instructor_id",nullable = false)
     @NotNull(message="Instructor is required")
-    private Instructor instuctor;
+    private Instructor instructor;
 
     @Column(name="title",nullable = false)
     @NotBlank(message = "Course title is required")

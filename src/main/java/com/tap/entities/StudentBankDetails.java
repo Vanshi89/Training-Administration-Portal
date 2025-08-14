@@ -2,8 +2,7 @@ package com.tap.entities;
 
 import com.tap.entities.Student;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -11,6 +10,9 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Table(name = "studentBankDetails", schema = "tap_project")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class StudentBankDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

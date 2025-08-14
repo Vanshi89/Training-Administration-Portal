@@ -4,8 +4,7 @@ import com.tap.entities.Instructor;
 import com.tap.entities.InstructorTimeSlot;
 import com.tap.entities.Student;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -13,6 +12,9 @@ import java.time.LocalDateTime;
 @Table(name = "StudentBooking", schema = "tap_project")
 @Getter
 @Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class StudentBooking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
