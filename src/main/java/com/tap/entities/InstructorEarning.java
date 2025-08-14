@@ -5,7 +5,6 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -37,7 +36,7 @@ public class InstructorEarning {
 
     @ManyToOne
     @JoinColumn(name = "bank_detail_id")
-    private InstructorBankDetails bankDetail;
+    private InstructorBankDetail bankDetail;
 
     @Column(name = "notes", length = 1000)
     @Size(max = 1000, message = "Notes must be 1000 characters or fewer")
