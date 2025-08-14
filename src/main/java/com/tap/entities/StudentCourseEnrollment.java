@@ -1,5 +1,7 @@
-package entities;
+package com.tap.entities;
 
+import com.tap.entities.Course;
+import com.tap.entities.Student;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

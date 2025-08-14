@@ -1,5 +1,8 @@
-package entities;
+package com.tap.entities;
 
+import com.tap.entities.Instructor;
+import com.tap.entities.InstructorTimeSlot;
+import com.tap.entities.Student;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
