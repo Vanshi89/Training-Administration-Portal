@@ -1,0 +1,24 @@
+POST users:
+{
+    "username": "testinstructor",
+    "password": "password123instructor",
+    "email": "testinstructor@example.com",
+    "role": "instructor"
+}
+
+{
+    "username": "new.instructor",
+    "password": "passwosadfrd123",
+    "email": "instructor@example.com",
+    "firstName": "Jane",
+    "lastName": "Doe"
+}
+
+{
+    "username": "new.student",
+    "password": "password123",
+    "email": "student@example.com",
+    "firstName": "John",
+    "lastName": "Smith",
+    "phoneNumber": "1234567890"
+}
