@@ -24,13 +24,20 @@ public class Instructor extends User {
     @Column(name ="last_name", nullable = false)
     private String lastName;
 
-    @Column(name = "full_name", insertable = false)
-    @Formula("first_name || ' ' || last_name")
+    @Column(name = "full_name")
     private String fullName;
 
     @Column(name = "is_verified")
     @ColumnDefault("false")
     private Boolean isVerified = false;
+
+    @PrePersist
+    @PreUpdate
+    private void calculateFullName() {
+        if (firstName != null && lastName != null) {
+            this.fullName = firstName + " " + lastName;
+        }
+    }
 
     // relationships
     // one-to-one relationship with the qualifications. one instructor will have one qualificaiton row

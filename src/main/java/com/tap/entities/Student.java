@@ -29,6 +29,14 @@ public class Student extends User {
     @Column(name = "full_name")
     private String fullName;
 
+    @PrePersist
+    @PreUpdate
+    private void calculateFullName() {
+        if (firstName != null && lastName != null) {
+            this.fullName = firstName + " " + lastName;
+        }
+    }
+
     @Min(value = 0, message = "Age must be non-negative")
     @Max(value = 120, message = "Age must be realistic")
     @Column(name = "age")

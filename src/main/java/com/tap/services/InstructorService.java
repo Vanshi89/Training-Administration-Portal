@@ -3,6 +3,7 @@ package com.tap.services;
 import com.tap.dto.InstructorCreationDto;
 import com.tap.entities.Instructor;
 import com.tap.repositories.InstructorRepository;
+import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
