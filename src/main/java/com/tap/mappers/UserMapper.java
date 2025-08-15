@@ -1,5 +1,7 @@
 package com.tap.mappers;
 
+import com.tap.dto.InstructorDto;
+import com.tap.dto.StudentDto;
 import com.tap.dto.UserCreationDto;
 import com.tap.dto.UserDto;
 import com.tap.entities.Instructor;
@@ -33,6 +35,32 @@ public class UserMapper {
             dto.setRole("admin");
         }
         
+        return dto;
+    }
+
+    public InstructorDto toInstructorDto(Instructor instructor) {
+        InstructorDto dto = new InstructorDto();
+        dto.setUserId(instructor.getUserId());
+        dto.setUsername(instructor.getUsername());
+        dto.setEmail(instructor.getEmail());
+        dto.setFirstName(instructor.getFirstName());
+        dto.setLastName(instructor.getLastName());
+        dto.setFullName(instructor.getFullName());
+        dto.setIsVerified(instructor.getIsVerified());
+        return dto;
+    }
+
+    public StudentDto toStudentDto(Student student) {
+        StudentDto dto = new StudentDto();
+        dto.setUserId(student.getUserId());
+        dto.setUsername(student.getUsername());
+        dto.setEmail(student.getEmail());
+        dto.setFirstName(student.getFirstName());
+        dto.setLastName(student.getLastName());
+        dto.setFullName(student.getFullName());
+        dto.setPhoneNumber(student.getPhoneNumber());
+        dto.setAge(student.getAge());
+        dto.setIsVerified(student.getIsVerified());
         return dto;
     }
 }
