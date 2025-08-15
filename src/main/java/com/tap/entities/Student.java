@@ -14,18 +14,8 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Student {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "student_id_id", updatable = false, nullable = false)
-    private UUID StudentId;
-
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @MapsId
-    @JoinColumn(name = "student_id")
-    @NotNull(message = "User reference is required")
-    private User user;
+@PrimaryKeyJoinColumn(name = "student_id")
+public class Student extends User {
 
     @Column(name = "first_name", nullable = false)
     @NotBlank(message = "first name is required")

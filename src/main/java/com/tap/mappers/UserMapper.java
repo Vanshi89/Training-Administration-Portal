@@ -2,6 +2,8 @@ package com.tap.mappers;
 
 import com.tap.dto.UserCreationDto;
 import com.tap.dto.UserDto;
+import com.tap.entities.Instructor;
+import com.tap.entities.Student;
 import com.tap.entities.User;
 import org.springframework.stereotype.Component;
 
@@ -21,10 +23,16 @@ public class UserMapper {
         dto.setUserId(user.getUserId());
         dto.setUsername(user.getUsername());
         dto.setEmail(user.getEmail());
-        if (user.getRole() != null) {
-            dto.setRole(user.getRole().getRoleName().toString());
-        }
         dto.setCreatedAt(user.getCreatedAt());
+
+        if (user instanceof Instructor) {
+            dto.setRole("instructor");
+        } else if (user instanceof Student) {
+            dto.setRole("student");
+        } else {
+            dto.setRole("admin");
+        }
+        
         return dto;
     }
 }

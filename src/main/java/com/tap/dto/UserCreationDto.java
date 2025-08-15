@@ -1,6 +1,6 @@
 package com.tap.dto;
 
-import com.tap.entities.Role;
+//import com.tap.entities.Role;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -19,7 +19,4 @@ public class UserCreationDto {
     @NotBlank(message = "Email is required")
     @jakarta.validation.constraints.Email(message = "Email should be valid")
     private String email;
-
-    @NotBlank(message = "Role is required")
-    private String role;
 }

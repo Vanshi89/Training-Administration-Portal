@@ -15,17 +15,8 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Instructor {
-
-    @Id
-    @Column(name = "instructor_id")
-    private UUID instructorId;
-
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @MapsId
-    @JoinColumn(name = "instructor_id")
-    private User user;
+@PrimaryKeyJoinColumn(name = "instructor_id")
+public class Instructor extends User {
 
     @Column(name = "first_name", nullable = false)
     private String firstName;
