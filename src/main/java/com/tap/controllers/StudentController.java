@@ -2,6 +2,7 @@ package com.tap.controllers;
 
 import com.tap.dto.StudentCreationDto;
 import com.tap.dto.StudentDto;
+import com.tap.dto.StudentPreferenceDto;
 import com.tap.services.StudentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,6 +46,24 @@ public class StudentController {
             return ResponseEntity.ok(studentService.updateStudent(id, studentDto));
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/{id}/preferences")
+    public ResponseEntity<?> createOrUpdatePreferences(@PathVariable UUID id, @RequestBody StudentPreferenceDto preferenceDto) {
+        try {
+            return new ResponseEntity<>(studentService.createOrUpdatePreference(id, preferenceDto), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/{id}/preferences")
+    public ResponseEntity<?> getPreferences(@PathVariable UUID id) {
+        try {
+            return ResponseEntity.ok(studentService.getPreferenceByStudentId(id));
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 }

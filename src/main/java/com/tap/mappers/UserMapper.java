@@ -3,11 +3,13 @@ package com.tap.mappers;
 import com.tap.dto.InstructorDto;
 import com.tap.dto.InstructorResumeDto;
 import com.tap.dto.StudentDto;
+import com.tap.dto.StudentPreferenceDto;
 import com.tap.dto.UserCreationDto;
 import com.tap.dto.UserDto;
 import com.tap.entities.Instructor;
 import com.tap.entities.InstructorResume;
 import com.tap.entities.Student;
+import com.tap.entities.StudentPreference;
 import com.tap.entities.User;
 import org.springframework.stereotype.Component;
 
@@ -72,6 +74,17 @@ public class UserMapper {
         dto.setInstructorId(resume.getInstructor().getUserId());
         dto.setResumeUrl(resume.getResumeUrl());
         dto.setUploadedAt(resume.getUploadedAt());
+        return dto;
+    }
+
+    public StudentPreferenceDto toStudentPreferenceDto(StudentPreference preference) {
+        StudentPreferenceDto dto = new StudentPreferenceDto();
+        dto.setPreferenceId(preference.getPreferenceId());
+        dto.setStudentId(preference.getStudent().getUserId());
+        dto.setRequiredSkills(preference.getRequiredSkills());
+        dto.setPreferredTimeSlots(preference.getPreferredTimeSlots());
+        dto.setPreferredStartTime(preference.getPreferredStartTime());
+        dto.setPreferredEndTime(preference.getPreferredEndTime());
         return dto;
     }
 }

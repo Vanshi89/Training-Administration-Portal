@@ -22,7 +22,7 @@ public class StudentPreference {
     @Column(name = "preference_id")
     private Integer preferenceId;
 
-    @ManyToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "student_id", nullable = false)
     private Student student;
 
