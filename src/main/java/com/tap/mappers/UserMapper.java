@@ -1,10 +1,12 @@
 package com.tap.mappers;
 
 import com.tap.dto.InstructorDto;
+import com.tap.dto.InstructorResumeDto;
 import com.tap.dto.StudentDto;
 import com.tap.dto.UserCreationDto;
 import com.tap.dto.UserDto;
 import com.tap.entities.Instructor;
+import com.tap.entities.InstructorResume;
 import com.tap.entities.Student;
 import com.tap.entities.User;
 import org.springframework.stereotype.Component;
@@ -61,6 +63,15 @@ public class UserMapper {
         dto.setPhoneNumber(student.getPhoneNumber());
         dto.setAge(student.getAge());
         dto.setIsVerified(student.getIsVerified());
+        return dto;
+    }
+
+    public InstructorResumeDto toInstructorResumeDto(InstructorResume resume) {
+        InstructorResumeDto dto = new InstructorResumeDto();
+        dto.setResumeId(resume.getResumeId());
+        dto.setInstructorId(resume.getInstructor().getUserId());
+        dto.setResumeUrl(resume.getResumeUrl());
+        dto.setUploadedAt(resume.getUploadedAt());
         return dto;
     }
 }

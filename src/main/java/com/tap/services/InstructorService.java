@@ -2,12 +2,23 @@ package com.tap.services;
 
 import com.tap.dto.InstructorCreationDto;
 import com.tap.dto.InstructorDto;
+import com.tap.dto.InstructorResumeDto;
 import com.tap.entities.Instructor;
+import com.tap.entities.InstructorResume;
 import com.tap.mappers.UserMapper;
 import com.tap.repositories.InstructorRepository;
+import com.tap.repositories.InstructorResumeRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -17,10 +28,20 @@ public class InstructorService {
 
     private final InstructorRepository instructorRepository;
     private final UserMapper userMapper;
+    private final InstructorResumeRepository resumeRepository;
+    private final Path fileStorageLocation;
 
-    public InstructorService(InstructorRepository instructorRepository, UserMapper userMapper) {
+    public InstructorService(InstructorRepository instructorRepository, UserMapper userMapper,
+                             InstructorResumeRepository resumeRepository, @Value("${file.upload-dir}") String uploadDir) {
         this.instructorRepository = instructorRepository;
         this.userMapper = userMapper;
+        this.resumeRepository = resumeRepository;
+        this.fileStorageLocation = Paths.get(uploadDir).toAbsolutePath().normalize();
+        try {
+            Files.createDirectories(this.fileStorageLocation);
+        } catch (Exception ex) {
+            throw new RuntimeException("Could not create the directory where the uploaded files will be stored.", ex);
+        }
     }
 
     @Transactional
@@ -63,5 +84,29 @@ public class InstructorService {
 
         Instructor updatedInstructor = instructorRepository.save(instructor);
         return userMapper.toInstructorDto(updatedInstructor);
+    }
+
+    @Transactional
+    public InstructorResumeDto uploadResume(UUID instructorId, MultipartFile file) {
+        Instructor instructor = instructorRepository.findById(instructorId)
+                .orElseThrow(() -> new RuntimeException("Instructor not found"));
+
+        String fileName = instructorId.toString() + "_" + file.getOriginalFilename();
+
+        try {
+            Path targetLocation = this.fileStorageLocation.resolve(fileName);
+            Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+
+            InstructorResume resume = new InstructorResume();
+            resume.setInstructor(instructor);
+            resume.setResumeUrl("/uploads/resumes/" + fileName);
+            resume.setUploadedAt(LocalDateTime.now());
+
+            InstructorResume savedResume = resumeRepository.save(resume);
+            return userMapper.toInstructorResumeDto(savedResume);
+
+        } catch (IOException ex) {
+            throw new RuntimeException("Could not store file " + fileName + ". Please try again!", ex);
+        }
     }
 }
