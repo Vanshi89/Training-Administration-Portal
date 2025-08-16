@@ -5,6 +5,7 @@ import com.tap.dto.InstructorDto;
 import com.tap.dto.InstructorResumeDto;
 import com.tap.entities.Instructor;
 import com.tap.entities.InstructorResume;
+import com.tap.exceptions.ResourceNotFoundException;
 import com.tap.mappers.UserMapper;
 import com.tap.repositories.InstructorRepository;
 import com.tap.repositories.InstructorResumeRepository;
@@ -89,7 +90,7 @@ public class InstructorService {
     @Transactional
     public InstructorResumeDto uploadResume(UUID instructorId, MultipartFile file) {
         Instructor instructor = instructorRepository.findById(instructorId)
-                .orElseThrow(() -> new RuntimeException("Instructor not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Instructor not found with id: " + instructorId));
 
         String fileName = instructorId.toString() + "_" + file.getOriginalFilename();
 
@@ -97,7 +98,7 @@ public class InstructorService {
             Path targetLocation = this.fileStorageLocation.resolve(fileName);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
-            InstructorResume resume = new InstructorResume();
+            InstructorResume resume = resumeRepository.findByInstructor(instructor).orElse(new InstructorResume());
             resume.setInstructor(instructor);
             resume.setResumeUrl("/uploads/resumes/" + fileName);
             resume.setUploadedAt(LocalDateTime.now());
@@ -108,5 +109,13 @@ public class InstructorService {
         } catch (IOException ex) {
             throw new RuntimeException("Could not store file " + fileName + ". Please try again!", ex);
         }
+    }
+
+    public InstructorResumeDto getResumeByInstructorId(UUID instructorId) {
+        Instructor instructor = instructorRepository.findById(instructorId)
+                .orElseThrow(() -> new ResourceNotFoundException("Instructor not found with id: " + instructorId));
+        InstructorResume resume = resumeRepository.findByInstructor(instructor)
+                .orElseThrow(() -> new ResourceNotFoundException("Resume not found for instructor with id: " + instructorId));
+        return userMapper.toInstructorResumeDto(resume);
     }
 }

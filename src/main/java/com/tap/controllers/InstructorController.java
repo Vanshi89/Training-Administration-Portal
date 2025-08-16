@@ -59,4 +59,19 @@ public class InstructorController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
+    @GetMapping("/{id}/resume")
+    public ResponseEntity<InstructorResumeDto> getResume(@PathVariable UUID id) {
+        return ResponseEntity.ok(instructorService.getResumeByInstructorId(id));
+    }
+
+    @PutMapping("/{id}/resume")
+    public ResponseEntity<?> updateResume(@PathVariable UUID id, @RequestParam("file") MultipartFile file) {
+        try {
+            InstructorResumeDto resumeDto = instructorService.uploadResume(id, file);
+            return ResponseEntity.ok(resumeDto);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
 }
