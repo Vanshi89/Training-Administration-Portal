@@ -1,12 +1,13 @@
 package com.tap.controllers;
 
-import com.tap.dto.StudentCreationDto;
-import com.tap.dto.StudentDto;
-import com.tap.dto.StudentPreferenceDto;
+import com.tap.dto.*;
 import com.tap.services.StudentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.tap.entities.StudentBankDetails;
+import com.tap.dto.StudentBankDetailsDto;
+import com.tap.dto.StudentPaymentDto;
 
 import java.util.List;
 import java.util.UUID;
@@ -66,4 +67,45 @@ public class StudentController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
+
+    @PostMapping("/{studentId}/bankDetails")
+    public ResponseEntity<StudentBankDetailsDto> createOrUpdateBankDetail(@PathVariable UUID studentId, @RequestBody StudentBankDetailsDto bankDetailsDto){
+        StudentBankDetailsDto savedDetails = studentService.createOrUpdateBankDetail(studentId,bankDetailsDto);
+        return ResponseEntity.ok(savedDetails);
+    }
+
+    @GetMapping("/{studentId}/bankDetails")
+    public ResponseEntity<StudentBankDetailsDto> getBankDetailsByStudentId(@PathVariable UUID studentId){
+        StudentBankDetailsDto details = studentService.getBankDetailsByStudentId(studentId);
+        return ResponseEntity.ok(details);
+    }
+
+    @DeleteMapping("/{studentId}/bankDetails")
+    public ResponseEntity<String> deleteBankDetailsByID(@PathVariable UUID studentId){
+        studentService.deleteBankDetailsByID(studentId);
+        return ResponseEntity.ok("Bank details deleted successfully");
+    }
+
+    @PostMapping("/{studentId}/payments")
+    public ResponseEntity<?> createPayment(@PathVariable UUID studentId, @RequestBody StudentPaymentDto paymentDto){
+        try {
+            paymentDto.setStudent(studentId);
+            StudentPaymentDto createdPayment = studentService.createPayment(studentId,paymentDto);
+            return new ResponseEntity<>(createdPayment, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/payments/{paymentId}")
+    public ResponseEntity<?> getPaymentById(@PathVariable Integer paymentId){
+        try {
+            StudentPaymentDto payment = studentService.getPaymentById(paymentId);
+            return ResponseEntity.ok(payment);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
+        }
+
+    }
+
 }

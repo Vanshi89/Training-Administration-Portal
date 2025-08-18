@@ -6,6 +6,7 @@ POST users:
     "role": "instructor"
 }
 
+POST instructor
 {
     "username": "new.instructor",
     "password": "passwosadfrd123",
@@ -14,6 +15,7 @@ POST users:
     "lastName": "Doe"
 }
 
+POST student
 {
     "username": "new.student",
     "password": "password123",
@@ -21,4 +23,32 @@ POST users:
     "firstName": "John",
     "lastName": "Smith",
     "phoneNumber": "1234567890"
+}
+
+POST student preferences
+{
+    "requiredSkills": ["python", "Cpp"],
+    "preferredTimeSlots": ["monring", "evening"],
+    "preferredStartTime": "2025-08-20T09:00:00",
+    "preferredEndTime": "2025-08-20T17:00:00"
+}
+
+POST Student bank details
+{
+  "accountHolderName": "Ashish Singh",
+  "bankName": "State Bank of India",
+  "accountNumber": "123456789012",
+  "ifscCode": "SBIN0001234",
+  "accountType": "Savings",
+  "branchName": "Sadar Branch"
+}
+
+POST student payment
+
+{
+  "studentBankDetails": 1,
+  "amount": 15000.75,
+  "paymentMethod": "UPI",
+  "paymentStatus": "Completed",
+  "notes": "Monthly stipend for August"
 }

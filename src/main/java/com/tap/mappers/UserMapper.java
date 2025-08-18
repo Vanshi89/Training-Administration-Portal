@@ -1,16 +1,7 @@
 package com.tap.mappers;
 
-import com.tap.dto.InstructorDto;
-import com.tap.dto.InstructorResumeDto;
-import com.tap.dto.StudentDto;
-import com.tap.dto.StudentPreferenceDto;
-import com.tap.dto.UserCreationDto;
-import com.tap.dto.UserDto;
-import com.tap.entities.Instructor;
-import com.tap.entities.InstructorResume;
-import com.tap.entities.Student;
-import com.tap.entities.StudentPreference;
-import com.tap.entities.User;
+import com.tap.dto.*;
+import com.tap.entities.*;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -86,5 +77,34 @@ public class UserMapper {
         dto.setPreferredStartTime(preference.getPreferredStartTime());
         dto.setPreferredEndTime(preference.getPreferredEndTime());
         return dto;
+    }
+
+    public StudentBankDetailsDto tostudentBankDetailsDto(StudentBankDetails bankDetails){
+        StudentBankDetailsDto dto = new StudentBankDetailsDto();
+        dto.setBankDetailId(bankDetails.getBankDetailId());
+        dto.setStudentId(bankDetails.getStudent().getUserId());
+        dto.setAccountHolderName(bankDetails.getAccountHolderName());
+        dto.setBankName(bankDetails.getBankName());
+        dto.setAccountNumber(bankDetails.getAccountNumber());
+        dto.setIfscCode(bankDetails.getIfscCode());
+        dto.setAccountType(bankDetails.getAccountType());
+        dto.setBranchName(bankDetails.getBranchName());
+        dto.setCreatedAt(bankDetails.getCreatedAt());
+
+        return dto;
+    }
+
+    public StudentPaymentDto tostudentPaymentDto(StudentPayment payment){
+        StudentPaymentDto dto = new StudentPaymentDto();
+        dto.setPaymentId(payment.getPaymentId());
+        dto.setStudent(payment.getStudent().getUserId());
+        dto.setStudentBankDetails(payment.getStudentBankDetails().getBankDetailId());
+        dto.setAmount(payment.getAmount());
+        dto.setPaymentMethod(payment.getPaymentMethod());
+        dto.setPaymentStatus(payment.getPaymentStatus());
+        dto.setPaidAt(payment.getPaidAt());
+        dto.setNotes(payment.getNotes());
+        return dto;
+
     }
 }
