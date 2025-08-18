@@ -15,7 +15,7 @@
 |          StudentBookings | `_`                                             |
 |               Instructor | `/api/instructors/{id}`                         |
 |         InstructorResume | `/api/instrcutors/{instructor-id}/resume`       |
-|    InstructorBankDetails | `_`                                             |
+|    InstructorBankDetails | `/api/instructors/{instructor-id}/bank-details` |
 |        InstructorEarning | `/api/instructors/{instructor-id}/earnings`     |
 |  InstructorQualification | `/api/instructors/{instructorId}/qualification` |
 |          InstructorSkill | ` /api/instructors/{instructorId}/skills`       |

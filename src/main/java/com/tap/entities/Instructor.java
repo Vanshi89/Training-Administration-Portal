@@ -64,6 +64,11 @@ public class Instructor extends User {
     @OneToMany(mappedBy = "instructor", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Course> courses;
 
+    public UUID getInstructorId() {
+        return getUserId(); // Correctly accesses inherited ID
+    }
 
+    public void setBankDetail(InstructorBankDetail detail) {
 
+    }
 }

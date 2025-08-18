@@ -1,0 +1,36 @@
+package com.tap.controllers;
+
+import com.tap.dto.InstructorQualificationDto;
+import com.tap.services.InstructorQualificationService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
+
+@RestController
+@RequestMapping("/api/instructors/{instructorId}/qualification")
+public class InstructorQualificationController {
+
+    private final InstructorQualificationService service;
+
+    public InstructorQualificationController(InstructorQualificationService service) {
+        this.service = service;
+    }
+
+    @PostMapping
+    public ResponseEntity<InstructorQualificationDto> createOrUpdate(@PathVariable UUID instructorId,
+                                                                     @RequestBody InstructorQualificationDto dto) {
+        return ResponseEntity.ok(service.createOrUpdate(instructorId, dto));
+    }
+
+    @GetMapping
+    public ResponseEntity<InstructorQualificationDto> getQualification(@PathVariable UUID instructorId) {
+        return ResponseEntity.ok(service.getByInstructor(instructorId));
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteQualification(@PathVariable UUID instructorId) {
+        service.deleteByInstructor(instructorId);
+        return ResponseEntity.noContent().build();
+    }
+}

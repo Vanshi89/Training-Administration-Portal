@@ -44,7 +44,6 @@ POST Student bank details
 }
 
 POST student payment
-
 {
   "studentBankDetails": 1,
   "amount": 15000.75,
@@ -52,3 +51,63 @@ POST student payment
   "paymentStatus": "Completed",
   "notes": "Monthly stipend for August"
 }
+
+POST instructor bank details
+{
+  "accountHolderName": "Dr. Neha Sharma",
+  "bankName": "HDFC Bank",
+  "accountNumber": "987654321012",
+  "ifscCode": "HDFC0000456",
+  "accountType": "Savings",
+  "branchName": "Gomti Nagar Branch"
+}
+
+POST instructor earning
+{
+  "studentId": "f7da26e6-6e65-4d4c-ab59-f2fd756ebad3",
+  "bankDetailId": 1,
+  "amount": 7500.00,
+  "paymentMethod": "Bank Transfer",
+  "notes": "Payment for July mentoring sessions"
+}
+
+POST instructor skills
+
+{
+  "levelId": 3,
+  "skillName": "Data Structures and Algorithms"
+}
+
+POST proficeincy level
+{
+  "levelName": "beginner"
+}
+
+POST instructor qualification
+{
+  "bio": "Experienced software engineer with a passion for teaching and mentoring students in backend development.",
+  "highestQualification": "M.Tech in Computer Science",
+  "relevantExperience": 5
+}
+
+
+post instructro time slots
+{
+  "startTime": "2025-08-20T10:00:00",
+  "endTime": "2025-08-20T11:00:00",
+  "isBooked": false
+}
+
+
+POST course
+
+
+POST student courseEnrollments
+
+
+POST student bookings
+
+
+
+
+

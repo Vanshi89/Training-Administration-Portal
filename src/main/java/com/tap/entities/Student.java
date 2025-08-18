@@ -50,4 +50,8 @@ public class Student extends User {
     @Column(name = "is_verified", nullable = false)
     private Boolean isVerified = true;
 
+    public UUID getStudentId() {
+        return getUserId(); // inherited from User
+    }
+
 }

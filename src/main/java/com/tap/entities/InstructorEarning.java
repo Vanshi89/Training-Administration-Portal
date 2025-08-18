@@ -52,4 +52,10 @@ public class InstructorEarning {
     @NotNull(message = "Received timestamp is required")
     private LocalDateTime receivedAt;
 
+    @PrePersist
+    public void prePersist() {
+        if (receivedAt == null) {
+            receivedAt = LocalDateTime.now();
+        }
+    }
 }
