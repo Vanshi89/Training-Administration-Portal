@@ -44,6 +44,7 @@ POST Student bank details
 }
 
 POST student payment
+first have to post then get will work
 {
   "studentBankDetails": 1,
   "amount": 15000.75,
@@ -51,6 +52,9 @@ POST student payment
   "paymentStatus": "Completed",
   "notes": "Monthly stipend for August"
 }
+
+For instructor bank details, upload multipart pdf
+key file, value the pdf file
 
 POST instructor bank details
 {
@@ -71,16 +75,17 @@ POST instructor earning
   "notes": "Payment for July mentoring sessions"
 }
 
+first add levels then they will be used in skills right?
+POST proficeincy level
+{
+  "levelName": "beginner"
+}
+
 POST instructor skills
 
 {
   "levelId": 3,
   "skillName": "Data Structures and Algorithms"
-}
-
-POST proficeincy level
-{
-  "levelName": "beginner"
 }
 
 POST instructor qualification
@@ -100,9 +105,35 @@ post instructro time slots
 
 
 POST course
+{
+  "instructorId": "4ae73cd8-6438-479c-a7db-599b7266dd56",
+  "title": "DSA course",
+  "description": "This course covers the fundamentals of data structures and algorithms.",
+  "skillId": 1,
+  "price": 499.99,
+  "duration": "PT10H30M",
+  "levelId": 3,
+  "isPublished": true
+}
 
 
-POST student courseEnrollments
+to enroll a student to a course
+POST /api/enrollments
+{
+  "studentId": "your-student-uuid",
+  "courseId": "your-course-uuid"
+}
+GET is not created for enrollments
+GET is on studetn course Enrollments
+
+GET student courseEnrollments
+/api/enrollments/student/{studentId}
+
+to update progress use PUT request on 
+/api/enrollments/{enrollmentId}/progress
+{
+  "progress": 75.5
+}
 
 
 POST student bookings

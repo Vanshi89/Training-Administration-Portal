@@ -98,13 +98,45 @@ public class UserMapper {
         StudentPaymentDto dto = new StudentPaymentDto();
         dto.setPaymentId(payment.getPaymentId());
         dto.setStudent(payment.getStudent().getUserId());
-        dto.setStudentBankDetails(payment.getStudentBankDetails().getBankDetailId());
+        dto.setStudentBankDetails(
+                payment.getStudentBankDetails() != null ? payment.getStudentBankDetails().getBankDetailId() : null
+        );
         dto.setAmount(payment.getAmount());
         dto.setPaymentMethod(payment.getPaymentMethod());
         dto.setPaymentStatus(payment.getPaymentStatus());
         dto.setPaidAt(payment.getPaidAt());
         dto.setNotes(payment.getNotes());
         return dto;
+    }
 
+    public CourseDto toCourseDto(Course course) {
+        return new CourseDto(
+                course.getCourseId(),
+                course.getInstructor().getUserId(),
+                course.getTitle(),
+                course.getDescription(),
+                course.getSkill() != null ? course.getSkill().getInstructorSkillId() : null,
+                course.getSkill() != null ? course.getSkill().getSkillName() : null,
+                course.getPrice(),
+                course.getDuration(),
+                course.getLevel() != null ? course.getLevel().getLevelId() : null,
+                course.getLevel() != null ? course.getLevel().getLevelName().name() : null,
+                course.getCreatedAt(),
+                course.getUpdatedAt(),
+                course.getIsPublished()
+        );
+    }
+
+    public StudentCourseEnrollmentDto toStudentCourseEnrollmentDto(StudentCourseEnrollment enrollment) {
+        return new StudentCourseEnrollmentDto(
+                enrollment.getEnrollmentId(),
+                enrollment.getStudent().getUserId(),
+                enrollment.getStudent().getFullName(),
+                enrollment.getCourse().getCourseId(),
+                enrollment.getCourse().getTitle(),
+                enrollment.getStatus(),
+                enrollment.getProgress(),
+                enrollment.getEnrolledAt()
+        );
     }
 }

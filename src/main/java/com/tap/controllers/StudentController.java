@@ -97,7 +97,7 @@ public class StudentController {
         }
     }
 
-    @GetMapping("/payments/{paymentId}")
+    @GetMapping("/payments/{paymentId}") // this endpoint does not seem good
     public ResponseEntity<?> getPaymentById(@PathVariable Integer paymentId){
         try {
             StudentPaymentDto payment = studentService.getPaymentById(paymentId);
