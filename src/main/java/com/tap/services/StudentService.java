@@ -24,8 +24,9 @@ public class StudentService {
     private final CourseRepository courseRepository;
     private final InstructorEarningRepository instructorEarningRepository;
     private final InstructorBankDetailRepository instructorBankDetailRepository;
+    private final StudentCourseEnrollmentRepository enrollmentRepository;
 
-    public StudentService(StudentRepository studentRepository, UserMapper userMapper, StudentPreferenceRepository preferenceRepository, StudentBankDetailsRepository bankDetailsRepository, StudentPaymentRepository paymentRepository, CourseRepository courseRepository, InstructorEarningRepository instructorEarningRepository, InstructorBankDetailRepository instructorBankDetailRepository) {
+    public StudentService(StudentRepository studentRepository, UserMapper userMapper, StudentPreferenceRepository preferenceRepository, StudentBankDetailsRepository bankDetailsRepository, StudentPaymentRepository paymentRepository, CourseRepository courseRepository, InstructorEarningRepository instructorEarningRepository, InstructorBankDetailRepository instructorBankDetailRepository, StudentCourseEnrollmentRepository enrollmentRepository) {
         this.studentRepository = studentRepository;
         this.userMapper = userMapper;
         this.preferenceRepository = preferenceRepository;
@@ -34,6 +35,7 @@ public class StudentService {
         this.courseRepository = courseRepository;
         this.instructorEarningRepository = instructorEarningRepository;
         this.instructorBankDetailRepository = instructorBankDetailRepository;
+        this.enrollmentRepository = enrollmentRepository;
     }
 
     @Transactional
@@ -200,6 +202,12 @@ public class StudentService {
             instructor = course.getInstructor();
         } else {
             throw new IllegalArgumentException("courseId is required for payment");
+        }
+
+        // Ensure student enrolled in course before payment
+        boolean enrolled = enrollmentRepository.existsByStudent_UserIdAndCourse_CourseId(student.getUserId(), course.getCourseId());
+        if (!enrolled) {
+            throw new IllegalStateException("Student must be enrolled in course before payment");
         }
 
         StudentPayment payment = new StudentPayment();

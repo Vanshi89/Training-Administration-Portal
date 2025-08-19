@@ -113,6 +113,19 @@ public class UserMapper {
     }
 
     public CourseDto toCourseDto(Course course) {
+        // map instructor time slots (avoid recursion / only minimal fields)
+        java.util.List<InstructorTimeSlotDto> slotDtos = new java.util.ArrayList<>();
+        if (course.getInstructor() != null && course.getInstructor().getTimeSlots() != null) {
+            course.getInstructor().getTimeSlots().forEach(slot -> {
+                InstructorTimeSlotDto s = new InstructorTimeSlotDto();
+                s.setSlotId(slot.getSlotId());
+                s.setInstructorId(course.getInstructor().getUserId());
+                s.setStartTime(slot.getStartTime());
+                s.setEndTime(slot.getEndTime());
+                s.setIsBooked(slot.getIsBooked());
+                slotDtos.add(s);
+            });
+        }
         return new CourseDto(
                 course.getCourseId(),
                 course.getInstructor().getUserId(),
@@ -126,7 +139,8 @@ public class UserMapper {
                 course.getLevel() != null ? course.getLevel().getLevelName().name() : null,
                 course.getCreatedAt(),
                 course.getUpdatedAt(),
-                course.getIsPublished()
+                course.getIsPublished(),
+                slotDtos
         );
     }
 

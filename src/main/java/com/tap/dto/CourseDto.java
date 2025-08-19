@@ -3,7 +3,9 @@ package com.tap.dto;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
+import com.tap.dto.InstructorTimeSlotDto;
 
 public record CourseDto(
         UUID courseId,
@@ -18,6 +20,6 @@ public record CourseDto(
         String levelName,
         LocalDateTime createdAt,
         LocalDateTime updatedAt,
-        Boolean isPublished
-) {
-}
+        Boolean isPublished,
+        List<InstructorTimeSlotDto> timeSlots
+) {}

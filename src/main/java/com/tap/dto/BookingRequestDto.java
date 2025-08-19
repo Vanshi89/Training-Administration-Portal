@@ -5,6 +5,6 @@ import java.util.UUID;
 public record BookingRequestDto(
         UUID studentId,
         UUID instructorId,
-        Integer timeSlotId
-) {
-}
+        Integer timeSlotId,
+        UUID courseId
+) {}
