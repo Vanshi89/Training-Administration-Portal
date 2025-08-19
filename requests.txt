@@ -137,6 +137,12 @@ to update progress use PUT request on
 
 
 POST student bookings
+post on /api/bookings
+{
+  "studentId": "",
+  "instructorId": "",
+  "timeSlotId": 
+}
 
 
 

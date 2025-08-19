@@ -11,8 +11,8 @@
 |        StudentPreference | `/api/students{student-id}/preferences`         |
 |        StudentBankDetail | `/api/students{student-id}/bankDetails`         |
 |           StudentPayment | `/api/students{student-id}/payments`            |
-| StudentCourseEnrollments | `_`                                             | 
-|          StudentBookings | `_`                                             |
+| StudentCourseEnrollments | `POST: /api/enrollments`, `GET: /api/enrollments/student/{studentId}`, `Udate progress PUT: /api/enrollments/{enrollmentId}/progress`                                             | 
+|          StudentBookings | `POST: /api/bookings`                                             |
 |               Instructor | `/api/instructors/{id}`                         |
 |         InstructorResume | `/api/instrcutors/{instructor-id}/resume`       |
 |    InstructorBankDetails | `/api/instructors/{instructor-id}/bank-details` |
@@ -21,7 +21,7 @@
 |          InstructorSkill | ` /api/instructors/{instructorId}/skills`       |
 |         ProficiencyLevel | `/api/proficiency-levels`                       |
 |       InstructorTimeSlot | `/api/instructors/{instructorId}/slots`         | 
-|                   Course | `_`                                             | 
+|                   Course | `/api/courses/{courseId}`                       | 
 
 ## 👥 Team Members: 3
 
