@@ -139,4 +139,19 @@ public class UserMapper {
                 enrollment.getEnrolledAt()
         );
     }
+
+    public StudentBookingDto toStudentBookingDto(StudentBooking booking) {
+        return new StudentBookingDto(
+                booking.getBookingId(),
+                booking.getStudent().getUserId(),
+                booking.getStudent().getFullName(),
+                booking.getInstructor().getUserId(),
+                booking.getInstructor().getFullName(),
+                booking.getSlot().getSlotId(),
+                booking.getSlot().getStartTime(),
+                booking.getSlot().getEndTime(),
+                booking.getStatus(),
+                booking.getBookedAt()
+        );
+    }
 }
