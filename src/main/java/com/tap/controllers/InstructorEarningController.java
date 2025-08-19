@@ -31,6 +31,10 @@ public class InstructorEarningController {
         return ResponseEntity.ok(service.getEarningsByInstructor(instructorId));
     }
 
+//    @GetMapping
+//    public ResponseEntity<List<InstructorEarningDto>> list(@PathVariable UUID instructorId) {
+//        return ResponseEntity.ok(service.getEarningsByInstructor(instructorId));
+//    }
 
     @PutMapping
     public ResponseEntity<InstructorEarningDto> updateEarning(@PathVariable UUID instructorId,
@@ -42,6 +46,12 @@ public class InstructorEarningController {
     public ResponseEntity<Void> deleteEarning(@PathVariable UUID instructorId,
                                               @RequestBody InstructorEarningCreationDto dto) {
         service.deleteEarningByInstructor(instructorId, dto);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{earningId}")
+    public ResponseEntity<Void> delete(@PathVariable UUID instructorId, @PathVariable Integer earningId) {
+        service.deleteEarning(earningId);
         return ResponseEntity.noContent().build();
     }
 }

@@ -1,16 +1,10 @@
 package com.tap.services;
 
 import com.tap.dto.*;
-import com.tap.entities.Student;
-import com.tap.entities.StudentBankDetails;
-import com.tap.entities.StudentPayment;
-import com.tap.entities.StudentPreference;
+import com.tap.entities.*;
 import com.tap.exceptions.ResourceNotFoundException;
 import com.tap.mappers.UserMapper;
-import com.tap.repositories.StudentBankDetailsRepository;
-import com.tap.repositories.StudentPaymentRepository;
-import com.tap.repositories.StudentRepository;
-import com.tap.repositories.StudentPreferenceRepository;
+import com.tap.repositories.*;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -27,13 +21,19 @@ public class StudentService {
     private final StudentPreferenceRepository preferenceRepository;
     private final StudentBankDetailsRepository bankDetailsRepository;
     private final StudentPaymentRepository paymentRepository;
+    private final CourseRepository courseRepository;
+    private final InstructorEarningRepository instructorEarningRepository;
+    private final InstructorBankDetailRepository instructorBankDetailRepository;
 
-    public StudentService(StudentRepository studentRepository, UserMapper userMapper, StudentPreferenceRepository preferenceRepository, StudentBankDetailsRepository bankDetailsRepository, StudentPaymentRepository paymentRepository) {
+    public StudentService(StudentRepository studentRepository, UserMapper userMapper, StudentPreferenceRepository preferenceRepository, StudentBankDetailsRepository bankDetailsRepository, StudentPaymentRepository paymentRepository, CourseRepository courseRepository, InstructorEarningRepository instructorEarningRepository, InstructorBankDetailRepository instructorBankDetailRepository) {
         this.studentRepository = studentRepository;
         this.userMapper = userMapper;
         this.preferenceRepository = preferenceRepository;
         this.bankDetailsRepository = bankDetailsRepository;
         this.paymentRepository = paymentRepository;
+        this.courseRepository = courseRepository;
+        this.instructorEarningRepository = instructorEarningRepository;
+        this.instructorBankDetailRepository = instructorBankDetailRepository;
     }
 
     @Transactional
@@ -190,16 +190,45 @@ public class StudentService {
             bankDetails = bankDetailsRepository.findById(dto.getStudentBankDetails())
                     .orElseThrow(()->new ResourceNotFoundException("Bank details not found with id:"+dto.getStudentBankDetails()));
         }
+
+        // Fetch course & instructor
+        Course course = null;
+        Instructor instructor = null;
+        if(dto.getCourseId() != null){
+            course = courseRepository.findById(dto.getCourseId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Course not found with id:"+dto.getCourseId()));
+            instructor = course.getInstructor();
+        } else {
+            throw new IllegalArgumentException("courseId is required for payment");
+        }
+
         StudentPayment payment = new StudentPayment();
         payment.setStudent(student);
         payment.setStudentBankDetails(bankDetails);
+        payment.setCourse(course);
         payment.setAmount(dto.getAmount());
         payment.setPaymentMethod(dto.getPaymentMethod());
-        payment.setPaymentStatus(dto.getPaymentStatus());
+        payment.setPaymentStatus(dto.getPaymentStatus() != null ? dto.getPaymentStatus() : "COMPLETED");
         payment.setPaidAt(dto.getPaidAt() !=null ? dto.getPaidAt() : LocalDateTime.now());
         payment.setNotes(dto.getNotes());
 
         StudentPayment savedPayment = paymentRepository.save(payment);
+
+        // Auto create instructor earning
+        if(instructor != null){
+            InstructorEarning earning = new InstructorEarning();
+            earning.setInstructor(instructor);
+            earning.setAmount(savedPayment.getAmount());
+            earning.setStudent(student);
+            earning.setPaymentMethod(savedPayment.getPaymentMethod());
+            // choose first bank detail of instructor if exists
+            instructorBankDetailRepository.findByInstructorUserId(instructor.getUserId())
+                    .stream().findFirst().ifPresent(earning::setBankDetail);
+            earning.setNotes("Auto-generated from student payment #"+ savedPayment.getPaymentId());
+            earning.setReceivedAt(LocalDateTime.now());
+            instructorEarningRepository.save(earning);
+        }
+
         return userMapper.tostudentPaymentDto(savedPayment);
     }
 

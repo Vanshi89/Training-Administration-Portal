@@ -9,7 +9,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "studentPayments", schema = "tap_project")
+// Using snake_case table name to align with Hibernate's physical naming strategy and existing database table
+@Table(name = "student_payments", schema = "tap_project")
 @Getter
 @Setter
 @Data
@@ -24,6 +25,11 @@ public class StudentPayment {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "student_id", nullable = false)
     private Student student;
+
+    // Course for which the payment is made
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "course_id", nullable = false)
+    private Course course;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bank_detail_id") // Nullable

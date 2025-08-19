@@ -98,6 +98,9 @@ public class UserMapper {
         StudentPaymentDto dto = new StudentPaymentDto();
         dto.setPaymentId(payment.getPaymentId());
         dto.setStudent(payment.getStudent().getUserId());
+        if(payment.getCourse() != null){
+            dto.setCourseId(payment.getCourse().getCourseId());
+        }
         dto.setStudentBankDetails(
                 payment.getStudentBankDetails() != null ? payment.getStudentBankDetails().getBankDetailId() : null
         );
@@ -153,5 +156,22 @@ public class UserMapper {
                 booking.getStatus(),
                 booking.getBookedAt()
         );
+    }
+
+    public InstructorEarningDto toInstructorEarningDto(InstructorEarning earning) {
+        InstructorEarningDto dto = new InstructorEarningDto();
+        dto.setEarningId(earning.getEarningId());
+        dto.setInstructorId(earning.getInstructor().getUserId());
+        if(earning.getStudent()!=null){
+            dto.setStudentId(earning.getStudent().getUserId());
+        }
+        if(earning.getBankDetail()!=null){
+            dto.setBankDetailId(earning.getBankDetail().getBankDetailId());
+        }
+        dto.setAmount(earning.getAmount());
+        dto.setPaymentMethod(earning.getPaymentMethod());
+        dto.setNotes(earning.getNotes());
+        dto.setReceivedAt(earning.getReceivedAt());
+        return dto;
     }
 }

@@ -11,6 +11,8 @@ public class StudentPaymentDto {
     private Integer paymentId;
     private UUID student;
     private Integer studentBankDetails;
+    // Course for which this payment is made
+    private UUID courseId;
     private BigDecimal amount;
     private String paymentMethod;
     private String paymentStatus;
