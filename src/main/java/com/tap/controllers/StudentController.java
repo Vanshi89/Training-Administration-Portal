@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import com.tap.entities.StudentBankDetails;
 import com.tap.dto.StudentBankDetailsDto;
 import com.tap.dto.StudentPaymentDto;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.UUID;
@@ -26,8 +27,10 @@ public class StudentController {
     public ResponseEntity<?> createStudent(@RequestBody StudentCreationDto studentDto) {
         try {
             return new ResponseEntity<>(studentService.createStudent(studentDto), HttpStatus.CREATED);
+        } catch (ResponseStatusException ex) {
+            return ResponseEntity.status(ex.getStatusCode()).body(ex.getReason());
         } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Failed to create student", HttpStatus.BAD_REQUEST);
         }
     }
 

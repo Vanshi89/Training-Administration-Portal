@@ -6,7 +6,10 @@ import com.tap.exceptions.ResourceNotFoundException;
 import com.tap.mappers.UserMapper;
 import com.tap.repositories.*;
 import jakarta.transaction.Transactional;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -40,19 +43,35 @@ public class StudentService {
 
     @Transactional
     public StudentDto createStudent(StudentCreationDto dto) {
-        Student student = new Student();
-        student.setUsername(dto.getUsername());
-        student.setPassword(dto.getPassword()); // Remember to hash passwords!
-        student.setEmail(dto.getEmail());
-        student.setFirstName(dto.getFirstName());
-        student.setLastName(dto.getLastName());
-        student.setAge(dto.getAge());
-        student.setPhoneNumber(dto.getPhoneNumber());
-        student.setAuthorization(false);
-        student.setIsVerified(false);
+        // Pre-check to provide clear conflict messages
+        if (studentRepository.existsByUsername(dto.getUsername())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Username is already in use");
+        }
+        if (studentRepository.existsByEmail(dto.getEmail())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email is already in use");
+        }
+        if (studentRepository.existsByPhoneNumber(dto.getPhoneNumber())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Phone number is already in use");
+        }
 
-        Student savedStudent = studentRepository.save(student);
-        return userMapper.toStudentDto(savedStudent);
+        try {
+            Student student = new Student();
+            student.setUsername(dto.getUsername());
+            student.setPassword(dto.getPassword()); // Remember to hash passwords!
+            student.setEmail(dto.getEmail());
+            student.setFirstName(dto.getFirstName());
+            student.setLastName(dto.getLastName());
+            student.setAge(dto.getAge());
+            student.setPhoneNumber(dto.getPhoneNumber());
+            student.setAuthorization(false);
+            student.setIsVerified(false);
+
+            Student savedStudent = studentRepository.save(student);
+            return userMapper.toStudentDto(savedStudent);
+        } catch (DataIntegrityViolationException ex) {
+            // Fallback in case of a race condition causing a DB unique constraint violation
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Username, email, or phone number already exists");
+        }
     }
 
     public StudentDto getStudentById(UUID id) {
