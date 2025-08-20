@@ -59,4 +59,18 @@ public class InstructorSkillService {
 
         skillRepository.deleteByInstructor(instructor);
     }
+
+    public void deleteSkill(UUID instructorId, Integer skillId) {
+        Instructor instructor = instructorRepository.findById(instructorId)
+                .orElseThrow(() -> new RuntimeException("Instructor not found"));
+
+        InstructorSkill skill = skillRepository.findById(skillId)
+                .orElseThrow(() -> new RuntimeException("Skill not found"));
+
+        if (!skill.getInstructor().getInstructorId().equals(instructor.getInstructorId())) {
+            throw new RuntimeException("Skill does not belong to the instructor");
+        }
+
+        skillRepository.delete(skill);
+    }
 }

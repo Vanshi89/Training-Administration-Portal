@@ -29,9 +29,10 @@ public class InstructorSkillController {
         return ResponseEntity.ok(service.getSkillsByInstructor(instructorId));
     }
 
-    @DeleteMapping
-    public ResponseEntity<Void> deleteSkills(@PathVariable UUID instructorId) {
-        service.deleteAllSkills(instructorId);
+    @DeleteMapping("/{skillId}")
+    public ResponseEntity<Void> deleteSkill(@PathVariable UUID instructorId,
+                                            @PathVariable Integer skillId) {
+        service.deleteSkill(instructorId, skillId);
         return ResponseEntity.noContent().build();
     }
 }
