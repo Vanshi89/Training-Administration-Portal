@@ -30,9 +30,10 @@ public class InstructorTimeSlotController {
 
     @PutMapping("/{slotId}")
     public ResponseEntity<InstructorTimeSlotDto> updateSlot(
+            @PathVariable UUID instructorId,
             @PathVariable Integer slotId,
             @RequestBody InstructorTimeSlotDto dto) {
-        return ResponseEntity.ok(service.updateSlot(slotId, dto));
+        return ResponseEntity.ok(service.updateSlot(instructorId, slotId, dto));
     }
 
     @DeleteMapping("/{slotId}")

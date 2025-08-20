@@ -7,7 +7,9 @@ import com.tap.mappers.InstructorTimeSlotMapper;
 import com.tap.repositories.InstructorRepository;
 import com.tap.repositories.InstructorTimeSlotRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.UUID;
@@ -33,7 +35,7 @@ public class InstructorTimeSlotService {
 
     public InstructorTimeSlotDto createSlot(UUID instructorId, InstructorTimeSlotDto dto) {
         Instructor instructor = instructorRepository.findById(instructorId)
-                .orElseThrow(() -> new RuntimeException("Instructor not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Instructor not found"));
 
         InstructorTimeSlot slot = mapper.toEntity(dto, instructor);
         InstructorTimeSlot saved = slotRepository.save(slot);
@@ -42,16 +44,21 @@ public class InstructorTimeSlotService {
 
     public List<InstructorTimeSlotDto> getSlots(UUID instructorId) {
         Instructor instructor = instructorRepository.findById(instructorId)
-                .orElseThrow(() -> new RuntimeException("Instructor not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Instructor not found"));
 
         return slotRepository.findByInstructor(instructor).stream()
                 .map(mapper::toDto)
                 .collect(Collectors.toList());
     }
 
-    public InstructorTimeSlotDto updateSlot(Integer slotId, InstructorTimeSlotDto dto) {
+    public InstructorTimeSlotDto updateSlot(UUID instructorId, Integer slotId, InstructorTimeSlotDto dto) {
         InstructorTimeSlot slot = slotRepository.findById(slotId)
-                .orElseThrow(() -> new RuntimeException("Slot not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Slot not found"));
+
+        if (slot.getInstructor() == null || slot.getInstructor().getInstructorId() == null
+                || !slot.getInstructor().getInstructorId().equals(instructorId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You can only update your own slots");
+        }
 
         slot.setStartTime(dto.getStartTime());
         slot.setEndTime(dto.getEndTime());
@@ -63,14 +70,14 @@ public class InstructorTimeSlotService {
 
     public void deleteSlot(Integer slotId) {
         if (!slotRepository.existsById(slotId)) {
-            throw new RuntimeException("Slot not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Slot not found");
         }
         slotRepository.deleteById(slotId);
     }
 
     public void deleteAllSlots(UUID instructorId) {
         Instructor instructor = instructorRepository.findById(instructorId)
-                .orElseThrow(() -> new RuntimeException("Instructor not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Instructor not found"));
 
         List<InstructorTimeSlot> slots = slotRepository.findByInstructor(instructor);
         slotRepository.deleteAll(slots);
