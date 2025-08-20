@@ -1,6 +1,5 @@
 package com.tap.services;
 
-import com.tap.dto.EnrollmentRequestDto;
 import com.tap.dto.StudentCourseEnrollmentDto;
 import com.tap.entities.Course;
 import com.tap.entities.Student;
@@ -34,24 +33,6 @@ public class StudentCourseEnrollmentService {
         this.studentRepository = studentRepository;
         this.courseRepository = courseRepository;
         this.userMapper = userMapper;
-    }
-
-    @Transactional
-    public StudentCourseEnrollmentDto enrollStudentInCourse(EnrollmentRequestDto enrollmentRequest) {
-        Student student = studentRepository.findById(enrollmentRequest.studentId())
-                .orElseThrow(() -> new ResourceNotFoundException("Student not found with id: " + enrollmentRequest.studentId()));
-
-        Course course = courseRepository.findById(enrollmentRequest.courseId())
-                .orElseThrow(() -> new ResourceNotFoundException("Course not found with id: " + enrollmentRequest.courseId()));
-
-        StudentCourseEnrollment enrollment = new StudentCourseEnrollment();
-        enrollment.setStudent(student);
-        enrollment.setCourse(course);
-        enrollment.setStatus("ENROLLED");
-        enrollment.setProgress(BigDecimal.ZERO);
-
-        StudentCourseEnrollment savedEnrollment = enrollmentRepository.save(enrollment);
-        return userMapper.toStudentCourseEnrollmentDto(savedEnrollment);
     }
 
     public List<StudentCourseEnrollmentDto> getEnrollmentsByStudentId(UUID studentId) {

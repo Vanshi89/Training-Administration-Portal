@@ -6,8 +6,10 @@ import com.tap.entities.*;
 import com.tap.exceptions.ResourceNotFoundException;
 import com.tap.mappers.UserMapper;
 import com.tap.repositories.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class StudentBookingService {
@@ -43,15 +45,27 @@ public class StudentBookingService {
     InstructorTimeSlot timeSlot = timeSlotRepository.findById(bookingRequest.timeSlotId())
                 .orElseThrow(() -> new ResourceNotFoundException("Time slot not found"));
 
-    // Fetch and validate course
-    Course course = courseRepository.findById(bookingRequest.courseId())
-        .orElseThrow(() -> new ResourceNotFoundException("Course not found"));
-    if (!course.getInstructor().getUserId().equals(instructor.getUserId())) {
-        throw new IllegalArgumentException("Course does not belong to instructor");
-    }
+        // Fetch and validate course
+        Course course = courseRepository.findById(bookingRequest.courseId())
+                .orElseThrow(() -> new ResourceNotFoundException("Course not found"));
+
+        // Ensure course belongs to the specified instructor
+        if (course.getInstructor() == null || !course.getInstructor().getUserId().equals(instructor.getUserId())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Selected course does not belong to the specified instructor");
+        }
+
+        // Ensure time slot belongs to the specified instructor
+        if (timeSlot.getInstructor() == null || !timeSlot.getInstructor().getUserId().equals(instructor.getUserId())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Selected time slot does not belong to the specified instructor");
+        }
+
+        // Ensure course and time slot belong to the same instructor
+        if (!course.getInstructor().getUserId().equals(timeSlot.getInstructor().getUserId())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Selected course and time slot belong to different instructors");
+        }
 
         if (timeSlot.getIsBooked()) {
-            throw new IllegalStateException("Time slot is not available");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Time slot is not available");
         }
 
         StudentBooking booking = new StudentBooking();

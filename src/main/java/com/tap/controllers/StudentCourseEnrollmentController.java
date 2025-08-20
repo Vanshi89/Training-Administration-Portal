@@ -1,6 +1,5 @@
 package com.tap.controllers;
 
-import com.tap.dto.EnrollmentRequestDto;
 import com.tap.dto.ProgressUpdateDto;
 import com.tap.dto.StudentCourseEnrollmentDto;
 import com.tap.services.StudentCourseEnrollmentService;
@@ -25,12 +24,6 @@ public class StudentCourseEnrollmentController {
 
     public StudentCourseEnrollmentController(StudentCourseEnrollmentService enrollmentService) {
         this.enrollmentService = enrollmentService;
-    }
-
-    @PostMapping
-    public ResponseEntity<StudentCourseEnrollmentDto> enrollStudent(@RequestBody EnrollmentRequestDto enrollmentRequest) {
-        StudentCourseEnrollmentDto enrollmentDto = enrollmentService.enrollStudentInCourse(enrollmentRequest);
-        return new ResponseEntity<>(enrollmentDto, HttpStatus.CREATED);
     }
 
     @GetMapping("/student/{studentId}")
