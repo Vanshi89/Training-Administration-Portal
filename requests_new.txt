@@ -59,70 +59,115 @@ POST /api/instructors
 -> 201 { "userId": "{instructorId}", "fullName": "Alice Anderson", ... }
 
 2.2 (Optional) Update Instructor Profile
+All fields are optional, can update any combination of them
 PUT /api/instructors/{instructorId}
 {
-  "firstName": "Alice",
-  "lastName": "Anderson",
-  "email": "alice@teach.io",
-  "phone": "+15550001",
-  "bio": "11 years Java & Spring",
-  "experienceYears": 11
+    "username": "new.instructor",
+    "password": "passwosad123",
+    "email": "instructor@example.com",
+    "firstName": "Jane",
+    "lastName": "Doe"
 }
 -> 200 updated dto
+
+** same email or username conflict are handled as follows:
+- If the email is already in use by another instructor, return 409 Conflict
+- If the username is already taken, return 409 Conflict
+
+** Requests for instructor details:
+GET /api/instructors/{instructorId}
+GET /api/instructors
 
 2.3 Add Qualification (create or replace)
 POST /api/instructors/{instructorId}/qualification
 {
-  "degree": "MSc Computer Science",
-  "institution": "Tech University",
-  "year": 2015
+  "bio": "Experienced software engineer with a passion for teaching and mentoring students in backend development.",
+  "highestQualification": "M.Tech in Computer Science",
+  "relevantExperience": 5
 }
 -> 200 qualification dto
+
+PUT /api/instructors/{instructorId}/qualification
+{
+  "bio": "Experienced software engineer with a passion for teaching and mentoring students in backend development.",
+  "highestQualification": "M.Tech in Computer Science",
+  "relevantExperience": 5
+}
+
+** when instructor not there so it prints instructor not found
+
+** GET /api/instructors/{instructorId}/qualification to get one qualification
 
 2.4 Add Skills
 POST /api/instructors/{instructorId}/skills
 {
-  "name": "Java",
-  "description": "Core + Advanced"
-}
--> 200 skill dto
-
-POST /api/instructors/{instructorId}/skills
-{
-  "name": "Spring Boot",
-  "description": "REST APIs"
+  "levelId": 3,
+  "skillName": "Data Structures and Algorithms"
 }
 
-GET /api/instructors/{instructorId}/skills -> list
+DELETE /api/instructors/{instructorId}/skills/{skillId}
+
+** when skill not found so it prints skill not found
+
+** GET /api/instructors/{instructorId}/skills -> list
 
 2.5 Add Bank Detail (for earnings payouts)
 POST /api/instructors/{instructorId}/bank-details
 {
-  "bankName": "BankOne",
-  "accountNumber": "1234567890",
-  "ifsc": "BKONE001",
-  "accountHolderName": "Alice Anderson"
+  "accountHolderName": "Dr. Neha Sharma",
+  "bankName": "HDFC Bank",
+  "accountNumber": "987654321012",
+  "ifscCode": "HDFC0000456",
+  "accountType": "Savings",
+  "branchName": "Gomti Nagar Branch"
 }
 -> 200 bank detail dto (id = {bankDetailId})
+
+PUT /api/instructors/{instructorId}/bank-details/{bankDetailId}
+{
+  "accountHolderName": "Dr. Neha Sharma",
+  "bankName": "HDFC Bank",
+  "accountNumber": "987654321012",
+  "ifscCode": "HDFC0000456",
+  "accountType": "Current",
+  "branchName": "Gomti Nagar Branch"
+}
+
+DELETE /api/instructors/{instructorId}/bank-details/{bankDetailId}
+no response on successful deletion
+
+GET /api/instructors/{instructorId}/bank-details
+list the bank of an instructor
 
 2.6 (Optional) Upload Resume (multipart/form-data)
 POST /api/instructors/{instructorId}/resume  (file=resume.pdf)
 -> 201 resume dto (filename, size)
 
+PUT /api/instructors/{instructorId}/resume
+(file=resume.pdf)
+
+** for post and put use multipart form with key `file` and upload the file in value
+
+GET /api/instructors/{instructorId}/resume
+-> 200 resume dto
+
 2.7 Publish Time Slots
 POST /api/instructors/{instructorId}/slots
 {
-  "startTime": "2025-08-25T09:00:00Z",
-  "endTime": "2025-08-25T10:00:00Z"
+  "startTime": "2025-08-20T10:00:00",
+  "endTime": "2025-08-20T11:00:00",
+  "isBooked": false
 }
 -> 201 {"slotId":1,"isBooked":false,...}
 
-POST /api/instructors/{instructorId}/slots
+PUT /api/instructors/{instructorId}/slots/{slotId}
 {
-  "startTime": "2025-08-25T10:30:00Z",
-  "endTime": "2025-08-25T11:30:00Z"
+  "startTime": "2025-08-20T10:00:00",
+  "endTime": "2025-08-20T11:00:00",
+  "isBooked": true
 }
--> slotId 2
+slot can be updated only if he owns that slot (403 Forbidden)
+
 
 GET /api/instructors/{instructorId}/slots -> [slot1, slot2]
 
@@ -132,21 +177,31 @@ GET /api/instructors/{instructorId}/slots -> [slot1, slot2]
 3.1 Create Course
 POST /api/courses
 {
-  "title": "Java Foundations",
-  "description": "OOP, Collections, Streams",
-  "price": 199.00,
-  "instructorId": "{instructorId}"
+  "instructorId": "",
+  "title": "DSA course",
+  "description": "This course covers the fundamentals of data structures and algorithms.",
+  "skillId": 1,
+  "price": 499.99,
+  "duration": "PT10H30M",
+  "levelId": 3,
+  "isPublished": true
 }
+** instructor should exist
 -> 201 {"courseId":"{courseId}","timeSlots":[ ... from instructor slots ...], ...}
 
 3.2 Update Course (optional)
 PUT /api/courses/{courseId}
 {
-  "title": "Java Foundations & Advanced",
-  "description": "OOP, Collections, Streams, Concurrency",
-  "price": 249.00,
-  "instructorId": "{instructorId}"
+  "instructorId": "4ae73cd8-6438-479c-a7db-599b7266dd56",
+  "title": "DSA course",
+  "description": "This course covers the fundamentals of data structures and algorithms.",
+  "skillId": 1,
+  "price": 499.99,
+  "duration": "PT10H30M",
+  "levelId": 3,
+  "isPublished": true
 }
+course should be there to update
 
 3.3 List Courses (with embedded time slots)
 GET /api/courses -> 200
@@ -166,69 +221,64 @@ GET /api/courses -> 200
 3.4 Get Single Course
 GET /api/courses/{courseId}
 
+** only slots which were created by the owner of the course will be visible for that course
+
 ==================================================
 4. STUDENT ONBOARDING
 ==================================================
 4.1 Register Student
 POST /api/students
 {
-  "firstName": "Bob",
-  "lastName": "Brown",
-  "email": "bob@student.io",
-  "phone": "+15550099"
+    "username": "new.student",
+    "password": "password123",
+    "email": "student@example.com",
+    "firstName": "John",
+    "lastName": "Smith",
+    "phoneNumber": "1234567890",
+    "age": 20
 }
 -> 201 {"userId":"{studentId}","fullName":"Bob Brown",...}
 
 4.2 Update Student (optional)
 PUT /api/students/{studentId}
 {
-  "firstName": "Bobby",
-  "lastName": "Brown",
-  "email": "bob@student.io",
-  "phone": "+15550099"
+    "username": "old.student",
+    "password": "password123",
+    "email": "student_old@example.com",
+    "firstName": "John",
+    "lastName": "Smith",
+    "phoneNumber": "1234567890",
+    "age": 20
 }
 
 4.3 Set Preferences
 POST /api/students/{studentId}/preferences
 {
-  "preferredLearningStyle": "Hands-On",
-  "notificationChannel": "EMAIL",
-  "timezone": "UTC"
+    "requiredSkills": ["python", "Cpp"],
+    "preferredTimeSlots": ["monring", "evening"],
+    "preferredStartTime": "2025-08-20T09:00:00",
+    "preferredEndTime": "2025-08-20T17:00:00"
 }
 -> 200 preference dto
+
+** here post used for putting also. no extra post method
 
 4.4 (Optional) Student Bank Details
 POST /api/students/{studentId}/bankDetails
 {
-  "bankName":"StudentBank",
-  "accountNumber":"99887766",
-  "ifsc":"STBANK001",
-  "accountHolderName":"Bob Brown"
+  "accountHolderName": "Ashish Singh",
+  "bankName": "State Bank of India",
+  "accountNumber": "123456789012",
+  "ifscCode": "SBIN0001234",
+  "accountType": "Savings",
+  "branchName": "Sadar Branch"
 }
+
+** for bank details also same post is working as post for updating the bank details
 
 ==================================================
 5. ENROLLMENT PATHS
 ==================================================
-Option A: Direct Enrollment (without booking a slot first)
-
-5.1 Enroll
-POST /api/enrollments
-{
-  "studentId": "{studentId}",
-  "courseId": "{courseId}"
-}
--> 201 {"enrollmentId": {enrollmentId}, "progress":0, ...}
-
-5.2 List Student Enrollments
-GET /api/enrollments/student/{studentId}
--> [ {"enrollmentId":{enrollmentId},"courseId":"{courseId}","progress":0} ]
-
-5.3 Update Progress
-PUT /api/enrollments/{enrollmentId}/progress
-{
-  "progress": 35
-}
--> 200 updated enrollment dto
 
 Option B: Auto Enrollment via Booking (Recommended)
 
@@ -241,9 +291,12 @@ POST /api/bookings
   "studentId": "{studentId}",
   "instructorId": "{instructorId}",
   "courseId": "{courseId}",
-  "slotId": 1
+  "timeSlotId": 1
 }
--> 201 {"bookingId":123,"studentId":"{studentId}","instructorId":"{instructorId}","courseId":"{courseId}","slotId":1,"status":"CONFIRMED"}
+-> 201 {"bookingId":123,"studentId":"{studentId}","instructorId":"{instructorId}","courseId":"{courseId}","timeSlotId":1,"status":"CONFIRMED"}
+
+** GET is not there on /api/bookings
+** PUT is not there on /api/bookings
 
 (Behind the scenes: slot 1 marked booked; enrollment created if not existing.)
 
@@ -252,19 +305,32 @@ POST /api/bookings
 { same as above }
 -> 400 "Time slot already booked"
 
+6. Verify Enrollment
+GET /api/enrollments/student/{studentId}
+
+9. Update Progress
+PUT /api/enrollments/{enrollmentId}/progress
+{
+  "progress": 25.0
+}
+
+
 ==================================================
 7. PAYMENT (Requires Existing Enrollment)
 ==================================================
 Precondition: Student must be enrolled (direct or via booking). The service checks existence: existsByStudent_UserIdAndCourse_CourseId.
 
 7.1 Create Payment
+Only post
 POST /api/students/{studentId}/payments
 {
-  "amount": 249.00,
-  "currency": "USD",
-  "courseId": "{courseId}",
-  "method": "CARD",
-  "transactionReference": "TXN-20250820-0001"
+  "student": "",
+  "courseId": "",
+  "studentBankDetails": 300,
+  "amount": 149.99,
+  "paymentMethod": "CREDIT_CARD",
+  "paymentStatus": "COMPLETED",
+  "notes": "Initial course purchase"
 }
 -> 200 {"paymentId": {paymentId}, "studentId":"{studentId}", "courseId":"{courseId}", "amount":249.00 }
 
@@ -286,7 +352,7 @@ POST /api/students/{studentId}/payments
 GET /api/instructors/{instructorId}/earnings
 -> 200 [ {"earningId":{earningId},"amount":249.00,"courseId":"{courseId}","studentId":"{studentId}"} ]
 
-8.2 (Optional) Create Manual Earning
+8.2 (Optional) Create Manual Earning (not required)
 POST /api/instructors/{instructorId}/earnings
 {
   "amount": 50.00,
@@ -295,7 +361,7 @@ POST /api/instructors/{instructorId}/earnings
   "studentId": "{studentId}"
 }
 
-8.3 Update Earning (bulk semantics by instructor)
+8.3 Update Earning (bulk semantics by instructor) (not required)
 PUT /api/instructors/{instructorId}/earnings
 {
   "earningId": {earningId},
@@ -305,7 +371,7 @@ PUT /api/instructors/{instructorId}/earnings
   "studentId": "{studentId}"
 }
 
-8.4 Delete Earning By Payload
+8.4 Delete Earning By Payload (not Recommended)
 DELETE /api/instructors/{instructorId}/earnings
 {
   "earningId": {earningId},
