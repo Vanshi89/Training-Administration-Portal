@@ -4,6 +4,7 @@ import com.tap.dto.InstructorCreationDto;
 import com.tap.dto.InstructorDto;
 import com.tap.dto.InstructorResumeDto;
 import com.tap.services.InstructorService;
+import com.tap.exceptions.DuplicateResourceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +27,8 @@ public class InstructorController {
     public ResponseEntity<?> createInstructor(@RequestBody InstructorCreationDto instructorDto) {
         try {
             return new ResponseEntity<>(instructorService.createInstructor(instructorDto), HttpStatus.CREATED);
+        } catch (DuplicateResourceException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
@@ -45,6 +48,8 @@ public class InstructorController {
     public ResponseEntity<?> updateInstructor(@PathVariable UUID id, @RequestBody InstructorCreationDto instructorDto) {
         try {
             return ResponseEntity.ok(instructorService.updateInstructor(id, instructorDto));
+        } catch (DuplicateResourceException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

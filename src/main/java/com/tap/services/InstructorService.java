@@ -6,6 +6,8 @@ import com.tap.dto.InstructorResumeDto;
 import com.tap.entities.Instructor;
 import com.tap.entities.InstructorResume;
 import com.tap.exceptions.ResourceNotFoundException;
+import com.tap.exceptions.DuplicateResourceException;
+import com.tap.repositories.UserRepository;
 import com.tap.mappers.UserMapper;
 import com.tap.repositories.InstructorRepository;
 import com.tap.repositories.InstructorResumeRepository;
@@ -30,13 +32,16 @@ public class InstructorService {
     private final InstructorRepository instructorRepository;
     private final UserMapper userMapper;
     private final InstructorResumeRepository resumeRepository;
+    private final UserRepository userRepository;
     private final Path fileStorageLocation;
 
     public InstructorService(InstructorRepository instructorRepository, UserMapper userMapper,
-                             InstructorResumeRepository resumeRepository, @Value("${file.upload-dir}") String uploadDir) {
+                             InstructorResumeRepository resumeRepository, UserRepository userRepository,
+                             @Value("${file.upload-dir}") String uploadDir) {
         this.instructorRepository = instructorRepository;
         this.userMapper = userMapper;
         this.resumeRepository = resumeRepository;
+        this.userRepository = userRepository;
         this.fileStorageLocation = Paths.get(uploadDir).toAbsolutePath().normalize();
         try {
             Files.createDirectories(this.fileStorageLocation);
@@ -47,6 +52,12 @@ public class InstructorService {
 
     @Transactional
     public InstructorDto createInstructor(InstructorCreationDto dto) {
+        userRepository.findByUsername(dto.getUsername()).ifPresent(u -> {
+            throw new DuplicateResourceException("Username already exists: " + dto.getUsername());
+        });
+        userRepository.findByEmail(dto.getEmail()).ifPresent(u -> {
+            throw new DuplicateResourceException("Email already exists: " + dto.getEmail());
+        });
         Instructor instructor = new Instructor();
         instructor.setUsername(dto.getUsername());
         instructor.setPassword(dto.getPassword()); // Remember to hash passwords in a real application!
@@ -76,7 +87,16 @@ public class InstructorService {
     public InstructorDto updateInstructor(UUID id, InstructorCreationDto dto) {
         Instructor instructor = instructorRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Instructor not found"));
-
+        if (!instructor.getUsername().equals(dto.getUsername())) {
+            userRepository.findByUsername(dto.getUsername()).ifPresent(u -> {
+                throw new DuplicateResourceException("Username already exists: " + dto.getUsername());
+            });
+        }
+        if (!instructor.getEmail().equals(dto.getEmail())) {
+            userRepository.findByEmail(dto.getEmail()).ifPresent(u -> {
+                throw new DuplicateResourceException("Email already exists: " + dto.getEmail());
+            });
+        }
         instructor.setUsername(dto.getUsername());
         instructor.setEmail(dto.getEmail());
         instructor.setFirstName(dto.getFirstName());
