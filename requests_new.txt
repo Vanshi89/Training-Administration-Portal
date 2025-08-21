@@ -435,6 +435,16 @@ GET /api/users/{userId}
 11.3 List Users
 GET /api/users
 
+11.4 Update authorization
+PATCH /api/users/{userId}/authorization
+{
+  "authorization": true
+}
+
+{
+  "authorization": false
+}
+
 ==================================================
 12. ERROR & EDGE CASE EXAMPLES
 ==================================================
