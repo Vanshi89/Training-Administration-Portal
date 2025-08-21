@@ -28,7 +28,7 @@ public class StudentPayment {
 
     // Course for which the payment is made
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "course_id", nullable = false)
+    @JoinColumn(name = "course_id", nullable = true)
     private Course course;
 
     @ManyToOne(fetch = FetchType.LAZY)
