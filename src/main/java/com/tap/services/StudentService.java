@@ -349,6 +349,9 @@ public class StudentService {
         if (dto.getPassword() == null || dto.getPassword().length() < 6) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password must be at least 6 characters long");
         }
+        if (dto.getAge() != null && dto.getAge() < 15) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Age must be at least 15");
+        }
 
         try {
             Student student = new Student();
@@ -395,6 +398,9 @@ public class StudentService {
 
         if (dto.getPassword() != null && dto.getPassword().length() < 6) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password must be at least 6 characters long");
+        }
+        if (dto.getAge() != null && dto.getAge() < 15) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Age must be at least 15");
         }
 
         student.setUsername(dto.getUsername());

@@ -16,7 +16,7 @@ public class StudentCreationDto extends UserCreationDto {
     @NotBlank(message = "Last name is required")
     private String lastName;
 
-    @Min(value = 0, message = "Age must be non-negative")
+    @Min(value = 15, message = "Age must be at least 15")
     @Max(value = 120, message = "Age must be realistic")
     private Integer age;
 

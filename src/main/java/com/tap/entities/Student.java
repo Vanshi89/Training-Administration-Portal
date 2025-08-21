@@ -37,7 +37,7 @@ public class Student extends User {
         }
     }
 
-    @Min(value = 0, message = "Age must be non-negative")
+    @Min(value = 15, message = "Age must be at least 15")
     @Max(value = 120, message = "Age must be realistic")
     @Column(name = "age")
     private Integer age;
