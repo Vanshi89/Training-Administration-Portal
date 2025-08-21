@@ -47,7 +47,7 @@ GET /api/proficiency-levels -> 200
 2. INSTRUCTOR ONBOARDING
 ==================================================
 2.1 Register Instructor
-POST /api/instructors
+POST /api/instructors/register
 {
     "username": "new.instructor",
     "password": "passwosad123",
@@ -60,7 +60,8 @@ POST /api/instructors
 
 2.2 (Optional) Update Instructor Profile
 All fields are optional, can update any combination of them
-PUT /api/instructors/{instructorId}
+PUT /api/instructors/me
+authorization, same username and password
 {
     "username": "new.instructor",
     "password": "passwosad123",
@@ -75,8 +76,8 @@ PUT /api/instructors/{instructorId}
 - If the username is already taken, return 409 Conflict
 
 ** Requests for instructor details:
-GET /api/instructors/{instructorId}
-GET /api/instructors
+GET /api/instructors/me
+GET /api/instructors -- change for admin
 
 2.3 Add Qualification (create or replace)
 POST /api/instructors/{instructorId}/qualification
@@ -148,7 +149,7 @@ PUT /api/instructors/{instructorId}/resume
 
 ** for post and put use multipart form with key `file` and upload the file in value
 
-GET /api/instructors/{instructorId}/resume
+GET /api/instructors/me/resume
 -> 200 resume dto
 
 2.7 Publish Time Slots
