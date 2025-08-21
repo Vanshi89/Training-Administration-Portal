@@ -155,9 +155,11 @@ import com.tap.repositories.InstructorRepository;
 import com.tap.repositories.InstructorResumeRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -200,6 +202,9 @@ public class InstructorService {
 
     @Transactional
     public InstructorDto createInstructor(InstructorCreationDto dto) {
+        if (dto.getPassword() == null || dto.getPassword().length() < 6) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password must be at least 6 characters long");
+        }
         userRepository.findByUsername(dto.getUsername()).ifPresent(u -> {
             throw new DuplicateResourceException("Username already exists: " + dto.getUsername());
         });
@@ -247,6 +252,13 @@ public class InstructorService {
             userRepository.findByEmail(dto.getEmail()).ifPresent(u -> {
                 throw new DuplicateResourceException("Email already exists: " + dto.getEmail());
             });
+        }
+        // Optional password update with validation
+        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
+            if (dto.getPassword().length() < 6) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password must be at least 6 characters long");
+            }
+            instructor.setPassword(passwordEncoder.encode(dto.getPassword()));
         }
         instructor.setUsername(dto.getUsername());
         instructor.setEmail(dto.getEmail());

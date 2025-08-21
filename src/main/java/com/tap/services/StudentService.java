@@ -346,6 +346,9 @@ public class StudentService {
         if (studentRepository.existsByPhoneNumber(dto.getPhoneNumber())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Phone number is already in use");
         }
+        if (dto.getPassword() == null || dto.getPassword().length() < 6) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password must be at least 6 characters long");
+        }
 
         try {
             Student student = new Student();
@@ -390,12 +393,19 @@ public class StudentService {
         Student student = studentRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Student not found"));
 
+        if (dto.getPassword() != null && dto.getPassword().length() < 6) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password must be at least 6 characters long");
+        }
+
         student.setUsername(dto.getUsername());
         student.setEmail(dto.getEmail());
         student.setFirstName(dto.getFirstName());
         student.setLastName(dto.getLastName());
         student.setPhoneNumber(dto.getPhoneNumber());
         student.setAge(dto.getAge());
+        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
+            student.setPassword(passwordEncoder.encode(dto.getPassword()));
+        }
 
         Student updatedStudent = studentRepository.save(student);
         return userMapper.toStudentDto(updatedStudent);
