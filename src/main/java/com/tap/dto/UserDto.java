@@ -12,5 +12,7 @@ public class UserDto {
     private String email;
     private String role;
     private LocalDateTime createdAt;
+    private Boolean authorization;
+    private Boolean isVerified; // derived from subclass if available
 
 }

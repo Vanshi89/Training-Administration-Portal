@@ -21,13 +21,17 @@ public class UserMapper {
         dto.setUsername(user.getUsername());
         dto.setEmail(user.getEmail());
         dto.setCreatedAt(user.getCreatedAt());
+        dto.setAuthorization(user.getAuthorization());
 
         if (user instanceof Instructor) {
             dto.setRole("instructor");
+            dto.setIsVerified(((Instructor) user).getIsVerified());
         } else if (user instanceof Student) {
             dto.setRole("student");
+            dto.setIsVerified(((Student) user).getIsVerified());
         } else {
             dto.setRole("admin");
+            dto.setIsVerified(user.getAuthorization()); // assume admin considered verified when authorized
         }
         
         return dto;

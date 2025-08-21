@@ -53,13 +53,6 @@ public class InstructorSkillService {
                 .collect(Collectors.toList());
     }
 
-    public void deleteAllSkills(UUID instructorId) {
-        Instructor instructor = instructorRepository.findById(instructorId)
-                .orElseThrow(() -> new RuntimeException("Instructor not found"));
-
-        skillRepository.deleteByInstructor(instructor);
-    }
-
     public void deleteSkill(UUID instructorId, Integer skillId) {
         Instructor instructor = instructorRepository.findById(instructorId)
                 .orElseThrow(() -> new RuntimeException("Instructor not found"));

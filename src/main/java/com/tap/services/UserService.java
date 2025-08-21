@@ -2,6 +2,10 @@ package com.tap.services;
 
 import com.tap.dto.UserDto;
 import com.tap.entities.User;
+import com.tap.entities.Student;
+import com.tap.entities.Instructor;
+import com.tap.repositories.StudentRepository;
+import com.tap.repositories.InstructorRepository;
 import com.tap.mappers.UserMapper;
 import com.tap.repositories.UserRepository;
 import jakarta.transaction.Transactional;
@@ -17,11 +21,16 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final StudentRepository studentRepository;
+    private final InstructorRepository instructorRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository, UserMapper userMapper) {
+    public UserService(UserRepository userRepository, UserMapper userMapper,
+                       StudentRepository studentRepository, InstructorRepository instructorRepository) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
+        this.studentRepository = studentRepository;
+        this.instructorRepository = instructorRepository;
     }
 
     @Transactional
@@ -48,5 +57,27 @@ public class UserService {
         return userRepository.findAll().stream()
                 .map(userMapper::toDto)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public UserDto updateAuthorization(UUID userId, Boolean authorization) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+        user.setAuthorization(authorization);
+
+        // Propagate to subclass record if present to keep isVerified in sync
+        // Students: isVerified mirrors authorization
+        studentRepository.findById(userId).ifPresent(student -> {
+            student.setIsVerified(authorization);
+            studentRepository.save(student);
+        });
+        // Instructors: isVerified mirrors authorization (admin approved)
+        instructorRepository.findById(userId).ifPresent(instructor -> {
+            instructor.setIsVerified(authorization);
+            instructorRepository.save(instructor);
+        });
+
+        User saved = userRepository.save(user);
+        return userMapper.toDto(saved);
     }
 }

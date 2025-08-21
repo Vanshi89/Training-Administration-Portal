@@ -64,8 +64,8 @@ public class InstructorService {
         instructor.setEmail(dto.getEmail());
         instructor.setFirstName(dto.getFirstName());
         instructor.setLastName(dto.getLastName());
-        instructor.setAuthorization(false); // Default to not authorized
-        instructor.setIsVerified(false);
+    instructor.setAuthorization(false); // Default to not authorized
+    instructor.setIsVerified(false); // Keep in sync
 
         Instructor savedInstructor = instructorRepository.save(instructor);
         return userMapper.toInstructorDto(savedInstructor);

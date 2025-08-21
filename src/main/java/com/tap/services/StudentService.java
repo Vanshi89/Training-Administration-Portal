@@ -63,8 +63,10 @@ public class StudentService {
             student.setLastName(dto.getLastName());
             student.setAge(dto.getAge());
             student.setPhoneNumber(dto.getPhoneNumber());
-            student.setAuthorization(false);
-            student.setIsVerified(false);
+            // Students default to authorized
+            student.setAuthorization(true);
+            // Keep verification aligned with authorization for students at creation
+            student.setIsVerified(true);
 
             Student savedStudent = studentRepository.save(student);
             return userMapper.toStudentDto(savedStudent);

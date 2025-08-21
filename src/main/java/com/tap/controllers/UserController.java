@@ -42,4 +42,13 @@ public class UserController {
         List<UserDto> users = userService.getAllUsers();
         return ResponseEntity.ok(users);
     }
+
+    @PatchMapping("/{userId}/authorization")
+    public ResponseEntity<UserDto> updateAuthorization(@PathVariable UUID userId,
+                                                       @RequestBody AuthorizationUpdateRequest body) {
+        UserDto updated = userService.updateAuthorization(userId, body.authorization());
+        return ResponseEntity.ok(updated);
+    }
+
+    public record AuthorizationUpdateRequest(Boolean authorization) {}
 }
