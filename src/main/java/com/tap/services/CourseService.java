@@ -73,6 +73,20 @@ public class CourseService {
                 .collect(Collectors.toList());
     }
 
+        public List<CourseDto> getCoursesByInstructor(UUID instructorId) {
+                return courseRepository.findAll().stream()
+                                .filter(c -> c.getInstructor() != null && instructorId.equals(c.getInstructor().getUserId()))
+                                .map(userMapper::toCourseDto)
+                                .collect(Collectors.toList());
+        }
+
+        public List<CourseDto> getPublishedCourses() {
+                return courseRepository.findAll().stream()
+                                .filter(c -> Boolean.TRUE.equals(c.getIsPublished()))
+                                .map(userMapper::toCourseDto)
+                                .collect(Collectors.toList());
+        }
+
     @Transactional
     public CourseDto updateCourse(UUID id, CourseCreationDto courseDto) {
         Course course = courseRepository.findById(id)
