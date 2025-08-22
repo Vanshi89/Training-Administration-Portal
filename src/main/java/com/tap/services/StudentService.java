@@ -580,4 +580,11 @@ public class StudentService {
                 .orElseThrow(()->new ResourceNotFoundException("Payment not found with id: "));
         return userMapper.tostudentPaymentDto(payment);
     }
+
+    public java.util.List<StudentPaymentDto> getPaymentsByStudent(UUID studentId) {
+        return paymentRepository.findAll().stream()
+                .filter(p -> p.getStudent() != null && studentId.equals(p.getStudent().getUserId()))
+                .map(userMapper::tostudentPaymentDto)
+                .toList();
+    }
 }

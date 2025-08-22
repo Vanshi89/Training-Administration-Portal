@@ -259,14 +259,28 @@ public ResponseEntity<List<InstructorDto>> getAllInstructorsForStudents(Authenti
         }
     }
 
-    @GetMapping("/payments/{paymentId}")
-    public ResponseEntity<?> getPaymentById(@PathVariable Integer paymentId, Authentication authentication) {
+    @GetMapping("/me/payments")
+    public ResponseEntity<?> listMyPayments(Authentication authentication) {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         if (!userDetails.isStudent()) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access denied");
         }
+        UUID studentId = userDetails.getUser().getUserId();
+        return ResponseEntity.ok(studentService.getPaymentsByStudent(studentId));
+    }
+
+    @GetMapping("/me/payments/{paymentId}")
+    public ResponseEntity<?> getMyPaymentById(@PathVariable Integer paymentId, Authentication authentication) {
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        if (!userDetails.isStudent()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access denied");
+        }
+        UUID studentId = userDetails.getUser().getUserId();
         try {
             StudentPaymentDto payment = studentService.getPaymentById(paymentId);
+            if (payment == null || payment.getStudent() == null || !payment.getStudent().equals(studentId)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Not your payment");
+            }
             return ResponseEntity.ok(payment);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
