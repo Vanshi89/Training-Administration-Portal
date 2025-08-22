@@ -24,15 +24,8 @@ public class StudentBookingController {
         if (!userDetails.isStudent()) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access denied");
         }
-        // Create a new request object overriding the studentId with the authenticated user
-        bookingRequest = new BookingRequestDto(
-                userDetails.getUser().getUserId(),
-                bookingRequest.instructorId(),
-                bookingRequest.timeSlotId(),
-                bookingRequest.courseId()
-        );
         try {
-            StudentBookingDto bookingDto = bookingService.createBooking(bookingRequest);
+            StudentBookingDto bookingDto = bookingService.createBooking(userDetails.getUser().getUserId(), bookingRequest);
             return new ResponseEntity<>(bookingDto, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);

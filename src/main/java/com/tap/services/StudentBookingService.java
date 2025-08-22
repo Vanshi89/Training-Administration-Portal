@@ -37,8 +37,8 @@ public class StudentBookingService {
     }
 
     @Transactional
-    public StudentBookingDto createBooking(BookingRequestDto bookingRequest) {
-        Student student = studentRepository.findById(bookingRequest.studentId())
+    public StudentBookingDto createBooking(java.util.UUID studentId, BookingRequestDto bookingRequest) {
+        Student student = studentRepository.findById(studentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Student not found"));
         Instructor instructor = instructorRepository.findById(bookingRequest.instructorId())
                 .orElseThrow(() -> new ResourceNotFoundException("Instructor not found"));
@@ -46,8 +46,13 @@ public class StudentBookingService {
                 .orElseThrow(() -> new ResourceNotFoundException("Time slot not found"));
 
         // Fetch and validate course
-        Course course = courseRepository.findById(bookingRequest.courseId())
+    Course course = courseRepository.findById(bookingRequest.courseId())
                 .orElseThrow(() -> new ResourceNotFoundException("Course not found"));
+
+        // Reject if course not published
+        if (!Boolean.TRUE.equals(course.getIsPublished())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Course is not published");
+        }
 
         // Ensure course belongs to the specified instructor
         if (course.getInstructor() == null || !course.getInstructor().getUserId().equals(instructor.getUserId())) {
