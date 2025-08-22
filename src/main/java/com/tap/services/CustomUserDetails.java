@@ -9,6 +9,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.ArrayList;
 
 public class CustomUserDetails implements UserDetails {
 
@@ -32,10 +33,15 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        String role = isStudent() ? "ROLE_STUDENT"
-                : isInstructor() ? "ROLE_INSTRUCTOR"
-                : "ROLE_USER";
-        return List.of(new SimpleGrantedAuthority(role));
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        if (isStudent()) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_STUDENT"));
+        } else if (isInstructor()) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_INSTRUCTOR"));
+        } else {
+            authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+        }
+        return authorities;
     }
 
     @Override public String getPassword() { return user.getPassword(); }

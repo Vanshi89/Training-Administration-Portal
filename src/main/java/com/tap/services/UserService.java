@@ -59,6 +59,18 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
+    public List<UserDto> getAllStudents() {
+        return studentRepository.findAll().stream()
+                .map(userMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<UserDto> getAllInstructors() {
+        return instructorRepository.findAll().stream()
+                .map(userMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
     @Transactional
     public UserDto updateAuthorization(UUID userId, Boolean authorization) {
         User user = userRepository.findById(userId)
@@ -79,5 +91,16 @@ public class UserService {
 
         User saved = userRepository.save(user);
         return userMapper.toDto(saved);
+    }
+
+    @Transactional
+    public void deleteUser(UUID userId) {
+        if (!userRepository.existsById(userId)) {
+            throw new RuntimeException("User not found with id: " + userId);
+        }
+        // Delete subtype rows first to satisfy FK constraints
+        studentRepository.findById(userId).ifPresent(s -> studentRepository.deleteById(userId));
+        instructorRepository.findById(userId).ifPresent(i -> instructorRepository.deleteById(userId));
+        userRepository.deleteById(userId);
     }
 }
