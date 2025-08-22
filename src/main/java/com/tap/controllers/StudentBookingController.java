@@ -5,10 +5,8 @@ import com.tap.dto.StudentBookingDto;
 import com.tap.services.StudentBookingService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/bookings")
@@ -20,8 +18,19 @@ public class StudentBookingController {
         this.bookingService = bookingService;
     }
 
-    @PostMapping
-    public ResponseEntity<?> createBooking(@RequestBody BookingRequestDto bookingRequest) {
+    @PostMapping("/me")
+    public ResponseEntity<?> createBooking(@RequestBody BookingRequestDto bookingRequest, Authentication authentication) {
+        com.tap.services.CustomUserDetails userDetails = (com.tap.services.CustomUserDetails) authentication.getPrincipal();
+        if (!userDetails.isStudent()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access denied");
+        }
+        // Create a new request object overriding the studentId with the authenticated user
+        bookingRequest = new BookingRequestDto(
+                userDetails.getUser().getUserId(),
+                bookingRequest.instructorId(),
+                bookingRequest.timeSlotId(),
+                bookingRequest.courseId()
+        );
         try {
             StudentBookingDto bookingDto = bookingService.createBooking(bookingRequest);
             return new ResponseEntity<>(bookingDto, HttpStatus.CREATED);
