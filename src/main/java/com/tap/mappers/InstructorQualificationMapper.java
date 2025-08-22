@@ -13,7 +13,7 @@ public class InstructorQualificationMapper {
         qualification.setInstructor(instructor);
         qualification.setBio(dto.getBio());
         qualification.setHighestQualification(dto.getHighestQualification());
-        qualification.setReleventExperience(dto.getRelevantExperience());
+        qualification.setRelevantExperience(dto.getRelevantExperience());
         return qualification;
     }
 
@@ -22,7 +22,7 @@ public class InstructorQualificationMapper {
         dto.setInstructorId(entity.getInstructor().getInstructorId());
         dto.setBio(entity.getBio());
         dto.setHighestQualification(entity.getHighestQualification());
-        dto.setRelevantExperience(entity.getReleventExperience());
+        dto.setRelevantExperience(entity.getRelevantExperience());
         return dto;
     }
 }

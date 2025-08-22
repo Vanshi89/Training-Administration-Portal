@@ -35,7 +35,7 @@ public class InstructorQualificationService {
 
         qualification.setBio(dto.getBio());
         qualification.setHighestQualification(dto.getHighestQualification());
-        qualification.setReleventExperience(dto.getRelevantExperience());
+        qualification.setRelevantExperience(dto.getRelevantExperience());
 
         InstructorQualification saved = qualificationRepository.save(qualification);
         return mapper.toDto(saved);
@@ -65,7 +65,7 @@ public class InstructorQualificationService {
                 .orElseThrow(() -> new ResourceNotFoundException("Qualification not found for instructor"));
         qualification.setBio(dto.getBio());
         qualification.setHighestQualification(dto.getHighestQualification());
-        qualification.setReleventExperience(dto.getRelevantExperience());
+        qualification.setRelevantExperience(dto.getRelevantExperience());
         InstructorQualification saved = qualificationRepository.save(qualification);
         return mapper.toDto(saved);
     }
